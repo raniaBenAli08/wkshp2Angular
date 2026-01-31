@@ -1,0 +1,202 @@
+<div class="suggestions-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <h1>Suggestions</h1>
+      <p class="subtitle">
+        Partagez et explorez les meilleures idées de l'équipe
+      </p>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-wrapper">
+    <div class="search-container">
+      <svg
+        class="search-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Rechercher par titre ou catégorie..."
+        class="search-input"
+      />
+    </div>
+    <div class="filter-info" *ngIf="searchText">
+      {{ filteredSuggestions().length }} résultat{{
+        filteredSuggestions().length > 1 ? "s" : ""
+      }}
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <!-- Suggestions List -->
+    <div class="suggestions-list">
+      <div *ngIf="filteredSuggestions().length === 0" class="empty-state">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+        <p>Aucune suggestion trouvée</p>
+        <span>Essayez une autre recherche</span>
+      </div>
+
+      <div
+        *ngFor="let s of filteredSuggestions(); let i = index"
+        class="suggestion-card"
+        [@slideIn]
+      >
+        <div class="card-header">
+          <div class="title-section">
+            <h3>{{ s.title }}</h3>
+            <span
+              class="status-badge"
+              [ngClass]="{
+                'status-acceptee': s.status === 'acceptee',
+                'status-refusee': s.status === 'refusee',
+                'status-en_attente': s.status === 'en_attente'
+              }"
+            >
+              <svg
+                *ngIf="s.status === 'acceptee'"
+                class="status-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
+              <svg
+                *ngIf="s.status === 'refusee'"
+                class="status-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
+              </svg>
+              <svg
+                *ngIf="s.status === 'en_attente'"
+                class="status-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                />
+              </svg>
+              {{ formatStatus(s.status) }}
+            </span>
+          </div>
+          <div class="card-meta">
+            <span class="category-tag">{{ s.category }}</span>
+            <span class="date">{{ s.date | date : "dd MMM yyyy" }}</span>
+          </div>
+        </div>
+
+        <p class="description">{{ s.description }}</p>
+
+        <div class="card-footer">
+          <div class="likes-counter">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
+            </svg>
+            <span>{{ s.nbLikes }}</span>
+          </div>
+
+          <div class="actions" *ngIf="s.status !== 'refusee'">
+            <button
+              class="btn btn-like"
+              (click)="likeSuggestion(s)"
+              title="Aimer cette suggestion"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              <span>Liker</span>
+            </button>
+            <button
+              class="btn btn-favorite"
+              (click)="addToFavorites(s)"
+              title="Ajouter aux favoris"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon
+                  points="12 2 15.09 10.26 24 10.27 17.77 16.88 20.16 25.08 12 19.77 3.84 25.08 6.23 16.88 0 10.27 8.91 10.26 12 2"
+                ></polygon>
+              </svg>
+              <span>Favoris</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar: Favorites -->
+    <aside class="favorites-sidebar">
+      <div class="sidebar-header">
+        <h2>Favoris</h2>
+        <span class="favorite-count">{{ favorites.length }}</span>
+      </div>
+
+      <div *ngIf="favorites.length === 0" class="favorites-empty">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="12 2 15.09 10.26 24 10.27 17.77 16.88 20.16 25.08 12 19.77 3.84 25.08 6.23 16.88 0 10.27 8.91 10.26 12 2"
+          ></polygon>
+        </svg>
+        <p>Aucun favori</p>
+      </div>
+
+      <div class="favorites-list">
+        <div *ngFor="let f of favorites" class="favorite-item">
+          <div class="favorite-title">{{ f.title }}</div>
+          <div class="favorite-meta">
+            <span class="favorite-likes">❤️ {{ f.nbLikes }}</span>
+            <button
+              class="btn-remove"
+              (click)="removeFromFavorites(f)"
+              title="Retirer des favoris"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
