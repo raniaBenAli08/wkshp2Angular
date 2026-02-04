@@ -241,6 +241,8 @@
   .actions {
     flex-direction: column;
     align-items: center;
+
+    
   }
 
   .btn-back, .link-back {
