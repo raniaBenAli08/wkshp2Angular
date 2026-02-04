@@ -1,5 +1,4 @@
 <div class="suggestions-container">
-  <!-- Header Section -->
   <div class="header-section">
     <div class="header-content">
       <h1>Suggestions</h1>
@@ -9,7 +8,6 @@
     </div>
   </div>
 
-  <!-- Search Bar -->
   <div class="search-wrapper">
     <div class="search-container">
       <svg
@@ -36,9 +34,7 @@
     </div>
   </div>
 
-  <!-- Main Content -->
   <div class="content-wrapper">
-    <!-- Suggestions List -->
     <div class="suggestions-list">
       <div *ngIf="filteredSuggestions().length === 0" class="empty-state">
         <svg
@@ -110,7 +106,9 @@
         </div>
 
         <p class="description">{{ s.description }}</p>
-
+  <button class="btn-favorite" [routerLink]="['/suggestions', s.id]" class="btn-details">
+       Détails
+    </button>
         <div class="card-footer">
           <div class="likes-counter">
             <svg
@@ -161,7 +159,6 @@
       </div>
     </div>
 
-    <!-- Sidebar: Favorites -->
     <aside class="favorites-sidebar">
       <div class="sidebar-header">
         <h2>Favoris</h2>

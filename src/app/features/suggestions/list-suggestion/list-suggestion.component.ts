@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { Suggestion } from '../../models/suggestion';
+import { Suggestion } from '../../../models/suggestion';
 
 @Component({
   selector: 'app-list-suggestion',
@@ -12,7 +12,7 @@ import { Suggestion } from '../../models/suggestion';
         style({ opacity: 0, transform: 'translateY(10px)' }),
         animate(
           '300ms ease-out',
-          style({ opacity: 1, transform: 'translateY(0)' })
+          style({ opacity: 1, transform: 'translateY(0)' }),
         ),
       ]),
     ]),
@@ -65,19 +65,16 @@ export class ListSuggestionComponent {
     },
   ];
 
-  // Incrémenter le Like
   likeSuggestion(s: Suggestion): void {
     s.nbLikes++;
   }
 
-  // Ajouter aux favoris
   addToFavorites(s: Suggestion): void {
     if (!this.favorites.includes(s)) {
       this.favorites.push(s);
     }
   }
 
-  // Retirer des favoris
   removeFromFavorites(s: Suggestion): void {
     const index = this.favorites.indexOf(s);
     if (index > -1) {
@@ -85,16 +82,14 @@ export class ListSuggestionComponent {
     }
   }
 
-  // Filtrer par titre et catégorie
   filteredSuggestions(): Suggestion[] {
     return this.suggestions.filter(
       (s) =>
         s.title.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        s.category.toLowerCase().includes(this.searchText.toLowerCase())
+        s.category.toLowerCase().includes(this.searchText.toLowerCase()),
     );
   }
 
-  // Formater le statut pour l'affichage
   formatStatus(status: string): string {
     const statusMap: { [key: string]: string } = {
       acceptee: 'Acceptée',

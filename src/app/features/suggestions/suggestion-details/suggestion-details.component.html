@@ -1,0 +1,52 @@
+<div class="details-container" *ngIf="suggestionId">
+  <h2>Détails de la Suggestion #{{ suggestionId }}</h2>
+
+  <div class="details-card">
+    <h3>{{ suggestionDetails.title }}</h3>
+
+    <div class="detail-row">
+      <strong>Description :</strong>
+      <p>{{ suggestionDetails.description }}</p>
+    </div>
+
+
+
+    <div class="detail-row">
+      <strong>Date de création :</strong>
+      <span>{{ suggestionDetails.date }}</span>
+    </div>
+
+    <div class="detail-row" *ngIf="getStatusBadge()">
+      <strong>Statut :</strong>
+      <span class="status-badge" [ngClass]="getStatusClass()">
+        {{ getStatusText() }}
+      </span>
+    </div>
+
+    <!-- Vous pouvez ajouter plus de détails selon votre modèle -->
+    <div class="detail-row" *ngIf="getCategory()">
+      <strong>Catégorie :</strong>
+      <span class="category-tag">{{ getCategory() }}</span>
+    </div>
+
+    <div class="detail-row" *ngIf="getLikes() !== undefined">
+      <strong>Nombre de likes :</strong>
+      <span class="likes-count">❤️ {{ getLikes() }}</span>
+    </div>
+  </div>
+
+
+    <a routerLink="/suggestions" class="link-back">
+Back    </a>
+</div>
+
+<div *ngIf="!suggestionId" class="error-container">
+  <div class="error-card">
+    <h3>❌ Erreur</h3>
+    <p>Aucun ID de suggestion fourni dans l'URL.</p>
+    <p>Veuillez sélectionner une suggestion depuis la liste.</p>
+    <a routerLink="/suggestions" class="btn-secondary">
+      Voir la liste des suggestions
+    </a>
+  </div>
+</div>
