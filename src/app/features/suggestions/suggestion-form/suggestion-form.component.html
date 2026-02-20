@@ -1,0 +1,117 @@
+<div class="form-container">
+  <h2>Ajouter une nouvelle suggestion</h2>
+
+  <form [formGroup]="suggestionForm" (ngSubmit)="onSubmit()" class="suggestion-form">
+
+    <div class="form-group">
+      <label for="title">Titre :</label>
+      <input
+        type="text"
+        id="title"
+        formControlName="title"
+        class="form-control"
+        [ngClass]="{'is-invalid': title?.invalid && title?.touched}"
+      >
+
+      <div class="error-messages" *ngIf="title?.invalid && title?.touched">
+        <small *ngIf="title?.errors?.['required']">
+          ⚠ Le titre est obligatoire
+        </small>
+        <small *ngIf="title?.errors?.['minlength']">
+          ⚠ Le titre doit contenir au moins 5 caractères
+        </small>
+        <small *ngIf="title?.errors?.['pattern']">
+          ⚠ Le titre doit commencer par une majuscule et ne contenir que des lettres
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description :</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-control"
+        rows="4"
+        [ngClass]="{'is-invalid': description?.invalid && description?.touched}"
+      ></textarea>
+
+      <div class="error-messages" *ngIf="description?.invalid && description?.touched">
+        <small *ngIf="description?.errors?.['required']">
+          ⚠ La description est obligatoire
+        </small>
+        <small *ngIf="description?.errors?.['minlength']">
+          ⚠ La description doit contenir au moins 30 caractères
+        </small>
+        <small *ngIf="description?.value?.length > 0">
+          Caractères saisis : {{ description?.value?.length }}/30
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Catégorie :</label>
+      <select
+        id="category"
+        formControlName="category"
+        class="form-control"
+        [ngClass]="{'is-invalid': category?.invalid && category?.touched}"
+      >
+        <option value="" disabled selected>-- Sélectionnez une catégorie --</option>
+        <option *ngFor="let cat of categories" [value]="cat">
+          {{ cat }}
+        </option>
+      </select>
+
+      <div class="error-messages" *ngIf="category?.invalid && category?.touched">
+        <small *ngIf="category?.errors?.['required']">
+          ⚠ Veuillez sélectionner une catégorie
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date :</label>
+      <input
+        type="text"
+        id="date"
+        formControlName="date"
+        class="form-control readonly-field"
+        readonly
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="status">Status :</label>
+      <input
+        type="text"
+        id="status"
+        formControlName="status"
+        class="form-control readonly-field status-pending"
+        readonly
+      >
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="suggestionForm.invalid"
+      >
+        Soumettre
+      </button>
+
+      <button
+        type="button"
+        class="btn-cancel"
+        routerLink="/suggestions"
+      >
+        Annuler
+      </button>
+    </div>
+
+    <div class="form-status" *ngIf="suggestionForm.invalid">
+      ⚠ Formulaire invalide - {{ getInvalidFieldsCount() }} champ(s) à corriger
+    </div>
+  </form>
+</div>
