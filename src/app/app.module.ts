@@ -5,7 +5,7 @@ import {
 } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { provideHttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './core/header/header.component';
@@ -27,7 +27,7 @@ import { NotfoundComponent } from './core/notfound/notfound.component';
     BrowserAnimationsModule,
     FormsModule,
   ],
-  providers: [provideClientHydration()],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SuggestionService } from '../../../core/services/suggestion.service';
 import { Suggestion } from '../../../models/suggestion';
 
 @Component({
@@ -10,7 +11,6 @@ import { Suggestion } from '../../../models/suggestion';
 })
 export class SuggestionFormComponent implements OnInit {
   suggestionForm!: FormGroup;
-
   categories: string[] = [
     'Infrastructure et bâtiments',
     'Technologie et services numériques',
@@ -24,10 +24,10 @@ export class SuggestionFormComponent implements OnInit {
     'Autre',
   ];
 
-  private static nextId = 5;
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private suggestionService: SuggestionService,
   ) {}
 
   ngOnInit(): void {
@@ -63,8 +63,7 @@ export class SuggestionFormComponent implements OnInit {
     if (this.suggestionForm.valid) {
       const formValue = this.suggestionForm.getRawValue();
 
-      const newSuggestion: Suggestion = {
-        id: SuggestionFormComponent.nextId++,
+      const newSuggestion: Partial<Suggestion> = {
         title: formValue.title,
         description: formValue.description,
         category: formValue.category,
@@ -73,9 +72,15 @@ export class SuggestionFormComponent implements OnInit {
         nbLikes: 0,
       };
 
-      console.log('Nouvelle suggestion ajoutée:', newSuggestion);
-
-      this.router.navigate(['/suggestions']);
+      this.suggestionService
+        .addSuggestion(newSuggestion as Suggestion)
+        .subscribe({
+          next: (saved) => {
+            console.log('Suggestion ajoutée', saved);
+            this.router.navigate(['/suggestions']);
+          },
+          error: (err) => console.error('Erreur ajout', err),
+        });
     }
   }
 
@@ -88,6 +93,7 @@ export class SuggestionFormComponent implements OnInit {
   get category() {
     return this.suggestionForm.get('category');
   }
+
   getInvalidFieldsCount(): number {
     let count = 0;
     if (this.title?.invalid) count++;
